@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { useRouter } from 'expo-router';
 import {
   AppHeader,
   Button,
@@ -23,6 +24,7 @@ const MODE_OPTIONS = [
 ] as const;
 
 export default function HomeScreen() {
+  const router = useRouter();
   const { colors, spacing } = useTheme();
   const { mode, setMode } = useAppStore();
 
@@ -46,10 +48,10 @@ export default function HomeScreen() {
         title="UDES Ride"
         rightSlot={
           <Button
-            label="Ayuda"
+            label="Acceder"
             variant="pill"
             size="sm"
-            onPress={() => {}}
+            onPress={() => router.push('/welcome')}
           />
         }
       />

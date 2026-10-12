@@ -10,3 +10,5 @@ export * from '@/components/ui/LocationInput';
 export * from '@/components/ui/SectionHeading';
 export * from '@/components/ui/SuggestionCard';
 export * from '@/components/ui/TabStrip';
+export * from '@/components/ui/AppLogo';
+export * from '@/components/ui/FormInput';

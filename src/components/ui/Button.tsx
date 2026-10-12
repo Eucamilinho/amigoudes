@@ -21,6 +21,7 @@ export interface ButtonProps {
   underline?: boolean;
   accessibilityHint?: string;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -34,6 +35,7 @@ export const Button: React.FC<ButtonProps> = ({
   underline = false,
   accessibilityHint,
   style,
+  testID,
 }) => {
   const { colors, spacing, radius } = useTheme();
   const isDisabled = disabled || loading;
@@ -117,6 +119,7 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <Pressable
+      testID={testID}
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityHint={accessibilityHint}

@@ -49,6 +49,24 @@ export default function RootLayout() {
               title: 'Inicio',
             }}
           />
+          <Stack.Screen
+            name="welcome"
+            options={{
+              title: 'Bienvenido',
+            }}
+          />
+          <Stack.Screen
+            name="login"
+            options={{
+              title: 'Iniciar sesión',
+            }}
+          />
+          <Stack.Screen
+            name="register"
+            options={{
+              title: 'Crear cuenta',
+            }}
+          />
         </Stack>
       </SafeAreaProvider>
     </QueryProvider>
