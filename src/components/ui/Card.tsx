@@ -4,27 +4,30 @@ import { useTheme } from '@/hooks/useTheme';
 
 export interface CardProps extends ViewProps {
   style?: StyleProp<ViewStyle>;
+  selected?: boolean;
   highlighted?: boolean;
 }
 
 export const Card: React.FC<CardProps> = ({
   children,
   style,
+  selected = false,
   highlighted = false,
   ...props
 }) => {
-  const { colors, spacing, radius, shadows } = useTheme();
+  const { colors, spacing, radius } = useTheme();
+  const isSelected = selected || highlighted;
 
   return (
     <View
       style={[
         styles.card,
         {
-          backgroundColor: colors.surface,
-          borderColor: highlighted ? colors.primary : colors.border,
-          borderRadius: radius.lg,
-          padding: spacing.lg,
-          ...shadows.card,
+          backgroundColor: colors.surfaceSubtle,
+          borderRadius: radius.md,
+          padding: spacing.xxl,
+          borderWidth: isSelected ? 2 : 0,
+          borderColor: isSelected ? colors.primary : 'transparent',
         },
         style,
       ]}
@@ -37,7 +40,6 @@ export const Card: React.FC<CardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    borderWidth: 1,
     overflow: 'hidden',
   },
 });

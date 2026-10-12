@@ -13,4 +13,14 @@ describe('Card component', () => {
 
     expect(screen.getByText('Contenido de prueba')).toBeTruthy();
   });
+
+  it('debe soportar la prop selected', async () => {
+    await render(
+      <Card selected>
+        <Text>Tarjeta seleccionada</Text>
+      </Card>
+    );
+
+    expect(screen.getByText('Tarjeta seleccionada')).toBeTruthy();
+  });
 });

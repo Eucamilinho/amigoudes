@@ -102,3 +102,33 @@ Este documento registra las decisiones técnicas fundamentales tomadas para el p
 - **Estado**: Aceptado
 - **Contexto**: Obytes v9 incorporó `uniwind` con Tailwind CSS v4. En Expo SDK 57 (React 19.2 / RN 0.86), Tailwind v4 requiere configuración experimental con el compilador de React y plugins de Metro adicionales.
 - **Decisión**: Conservar nuestro sistema de tokens accesible en `src/constants/theme.ts` y componentes base encapsulados (`components/ui`), evitando dependencias complejas y garantizando compatibilidad inmediata.
+
+---
+
+## ADR-011: Sistema de Diseño Transit Kiosk Azul
+
+- **Estado**: Aceptado
+- **Contexto**: Se requiere una experiencia visual funcional, sobria y de alta legibilidad para el servicio de carpooling universitario, inspirada en quioscos de tránsito modernos (tipo Uber), pero con **Azul (#276EF1)** como único color de marca estructural e interactivo.
+- **Decisión**:
+  - Paleta minimalista: Lienzo blanco (`#FFFFFF`), superficies sutiles (`#F6F6F6`), texto casi negro (`#000000`, `#333333`) y un único azul cromático (`#276EF1`) para header, botones principales, barra inferior fija (`StickyBottomBar`) y estados activos.
+  - Cero sombras ni elevation: la profundidad se logra estrictamente con escalones de superficie planos y bordes hairline de 1px.
+  - Radios binarios: solo 8 (`radius.md`) y 9999 (`radius.full`).
+  - Títulos con peso 400 (`display`, `heading`), sin bold en cabeceras.
+  - Alineación de texto siempre a la izquierda.
+- **Consecuencias**:
+  - Interfaz extremadamente limpia, accesible y predecible.
+  - Cero inconsistencias de estilo entre modo pasajero y conductor: ambos modos comparten el mismo lenguaje visual azul.
+
+---
+
+## ADR-012: Estrategia de Carga de Fuentes Inter (SDK 57)
+
+- **Estado**: Aceptado
+- **Contexto**: Para sustituir fuentes propietarias tipo UberMove con máxima legibilidad en pantallas móviles, se seleccionó la familia tipográfica **Inter** (`Inter_400Regular`, `Inter_500Medium`, `Inter_700Bold`) de `@expo-google-fonts/inter`.
+- **Decisión**:
+  - Se evaluaron los dos métodos recomendados por la documentación oficial de Expo SDK 57 (`https://docs.expo.dev/develop/user-interface/fonts.md`):
+    1. *Config plugin de `expo-font` en `app.json`*: Embebe las fuentes en el código nativo compilado, pero no funciona en Expo Go y requiere manejar nombres PostScript específicos por plataforma en iOS vs. Android (`Platform.select`).
+    2. *`useFonts` + `expo-splash-screen` en `src/app/_layout.tsx`*: Permite cargar las variantes de Inter de forma universal tanto en Expo Go, Development Builds como en Web, garantizando el mismo nombre de familia en todas las plataformas y previniendo el parpadeo de texto mediante `SplashScreen.preventAutoHideAsync()`.
+  - Se configuró la carga en `src/app/_layout.tsx` mediante `useFonts` junto con el plugin de `expo-splash-screen` en `app.json`.
+  - En Android, se garantiza que no se use `fontWeight` numérico para cambiar peso sobre fuentes personalizadas, resolviéndolo siempre mediante el `fontFamily` correspondiente en el componente `ThemedText`.
+- **Consecuencias**: Compatibilidad multiplataforma garantizada sin parpadeo y soporte perfecto en entornos de desarrollo y producción.

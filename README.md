@@ -63,7 +63,16 @@
 - **Formularios y Validaciones**: TanStack Form + Zod (esquemas en `src/schemas/`).
 - **Pruebas Automatizadas**: Jest 29 + React Native Testing Library v14 (en `src/**/__tests__/`).
 - **Análisis de Calidad**: ESLint con `eslint-config-expo` + Expo Doctor.
-- **Diseño**: Tokens institucionales UDES accesibles (alto contraste WCAG AA/AAA).
+- **Diseño**: "Transit Kiosk" inspirado en Uber con **Azul (#276EF1)** como único color de marca, diseño plano sin sombras, radios binarios (8 y 9999) y tipografía Inter (`@expo-google-fonts/inter`).
+
+---
+
+## Sistema de Diseño: Transit Kiosk Azul
+
+- **Filosofía**: Lienzo blanco (`#FFFFFF`), texto de alto contraste (`#000000`, `#333333`), y un único azul cromático (`#276EF1`) para elementos estructurales e interactivos (cabecera, CTA principal, barra inferior fija, estados activos).
+- **Cero Sombras**: Diseño totalmente plano; la profundidad se genera mediante escalones de superficie (`#FFFFFF` → `#F6F6F6` → azul) y bordes hairline de 1px.
+- **Tipografía Inter**: Títulos en peso 400 (`display`, `heading`, `headingSm`), textos medios en peso 500 (`subheading`, `bodyMedium`, `label`) y wordmark en peso 700 (`brand`). En Android, el peso se resuelve exclusivamente vía `fontFamily` para evitar distorsiones.
+- **Componentes Base**: `AppHeader`, `StickyBottomBar`, `SegmentedToggle`, `LocationInput`, `SuggestionCard`, `SectionHeading`, `TabStrip`, `Button`, `Card`, `Chip` y `ThemedText`.
 
 ---
 

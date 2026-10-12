@@ -18,6 +18,7 @@ export interface ButtonProps {
   disabled?: boolean;
   loading?: boolean;
   fullWidth?: boolean;
+  underline?: boolean;
   accessibilityHint?: string;
   style?: StyleProp<ViewStyle>;
 }
@@ -30,6 +31,7 @@ export const Button: React.FC<ButtonProps> = ({
   disabled = false,
   loading = false,
   fullWidth = false,
+  underline = false,
   accessibilityHint,
   style,
 }) => {
@@ -38,55 +40,79 @@ export const Button: React.FC<ButtonProps> = ({
 
   const getContainerStyle = (pressed: boolean): ViewStyle => {
     let backgroundColor: string = colors.primary;
-    let borderColor: string = colors.primary;
-    let borderWidth = 0;
+    let borderRadius: number = radius.md;
+    let minHeight = 48;
+    let paddingVertical = 12;
+    let paddingHorizontal: number = spacing.lg;
 
     switch (variant) {
       case 'primary':
-        backgroundColor = isDisabled ? colors.surfaceSubtle : pressed ? colors.primaryDark : colors.primary;
+        backgroundColor = isDisabled
+          ? colors.surfaceSubtle
+          : pressed
+            ? colors.primaryPressed
+            : colors.primary;
         break;
       case 'secondary':
-        backgroundColor = isDisabled ? colors.surfaceSubtle : pressed ? colors.accentLight : colors.accent;
-        break;
-      case 'outline':
-        backgroundColor = pressed ? colors.primaryMuted : 'transparent';
-        borderColor = isDisabled ? colors.border : colors.primary;
-        borderWidth = 1.5;
+        backgroundColor = isDisabled
+          ? colors.surfaceSubtle
+          : pressed
+            ? colors.divider
+            : colors.surfaceSubtle;
         break;
       case 'ghost':
-        backgroundColor = pressed ? colors.surfaceSubtle : 'transparent';
+        backgroundColor = 'transparent';
+        minHeight = 44;
+        paddingVertical = spacing.sm;
+        paddingHorizontal = spacing.xs;
+        break;
+      case 'pill':
+        backgroundColor = pressed ? colors.primarySubtle : colors.surface;
+        borderRadius = radius.full;
+        minHeight = 36;
+        paddingVertical = 6;
+        paddingHorizontal = spacing.lg;
         break;
     }
 
-    const paddingVertical = size === 'sm' ? spacing.sm : size === 'lg' ? spacing.lg : spacing.md;
-    const paddingHorizontal = size === 'sm' ? spacing.md : size === 'lg' ? spacing.xxl : spacing.xl;
+    // Ajuste opcional por tamaño explícito
+    if (size === 'sm' && variant !== 'pill') {
+      minHeight = 44;
+      paddingVertical = spacing.sm;
+      paddingHorizontal = spacing.md;
+    }
 
     return {
       backgroundColor,
-      borderColor,
-      borderWidth,
-      borderRadius: radius.md,
+      borderRadius,
+      minHeight,
       paddingVertical,
       paddingHorizontal,
       alignItems: 'center',
       justifyContent: 'center',
-      opacity: isDisabled && variant !== 'primary' ? 0.5 : 1,
       width: fullWidth ? '100%' : 'auto',
     };
   };
 
   const getTextColor = (): string => {
-    if (isDisabled && variant === 'primary') return colors.textMuted;
+    if (isDisabled) return colors.textMuted;
     switch (variant) {
       case 'primary':
         return colors.textInverse;
       case 'secondary':
         return colors.textPrimary;
-      case 'outline':
-        return isDisabled ? colors.textMuted : colors.primary;
       case 'ghost':
-        return isDisabled ? colors.textMuted : colors.textPrimary;
+        return colors.primary;
+      case 'pill':
+        return colors.primary;
     }
+  };
+
+  const getTextVariant = () => {
+    if (variant === 'pill' || size === 'sm') {
+      return 'label';
+    }
+    return 'bodyMedium';
   };
 
   return (
@@ -106,8 +132,9 @@ export const Button: React.FC<ButtonProps> = ({
         />
       ) : (
         <ThemedText
-          variant={size === 'sm' ? 'caption' : size === 'lg' ? 'bodyBold' : 'label'}
+          variant={getTextVariant()}
           color={getTextColor()}
+          style={underline && variant === 'ghost' ? { textDecorationLine: 'underline' } : undefined}
         >
           {label}
         </ThemedText>

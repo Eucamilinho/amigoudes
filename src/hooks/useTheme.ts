@@ -1,9 +1,9 @@
-import { COLORS, SPACING, RADIUS, FONT_SIZE, SHADOWS } from '@/constants/theme';
+import { COLORS, SPACING, RADIUS, FONT_SIZE, TYPOGRAPHY } from '@/constants/theme';
 
 /**
  * Hook para acceder a los tokens de diseño de la aplicación.
- * Prepara la arquitectura para soportar temas dinámicos (claro/oscuro) en fases futuras
- * manteniendo una API desacoplada.
+ * Sigue la filosofía "Transit Kiosk": colores limpios, sin sombras,
+ * radios binarios y tipografía Inter.
  */
 export function useTheme() {
   return {
@@ -11,6 +11,6 @@ export function useTheme() {
     spacing: SPACING,
     radius: RADIUS,
     fontSize: FONT_SIZE,
-    shadows: SHADOWS,
+    typography: TYPOGRAPHY,
   };
 }

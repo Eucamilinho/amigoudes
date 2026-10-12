@@ -1,164 +1,172 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
+  AppHeader,
   Button,
-  Card,
+  Chip,
+  LocationInput,
   ScreenContainer,
-  StatusBadge,
+  SectionHeading,
+  SegmentedToggle,
+  StickyBottomBar,
+  SuggestionCard,
   ThemedText,
 } from '@/components/ui';
 import { APP_CONFIG } from '@/constants/config';
 import { useTheme } from '@/hooks/useTheme';
 import { useAppStore } from '@/store/useAppStore';
+import type { UserMode } from '@/types/app';
+
+const MODE_OPTIONS = [
+  { value: 'passenger' as const, label: 'Pasajero' },
+  { value: 'driver' as const, label: 'Conductor' },
+] as const;
 
 export default function HomeScreen() {
   const { colors, spacing } = useTheme();
-  const { mode, toggleMode } = useAppStore();
+  const { mode, setMode } = useAppStore();
+
+  const [origin, setOrigin] = useState('Mi ubicación actual');
+  const [destination, setDestination] = useState('Campus Lagos del Cacique');
 
   const isPassenger = mode === 'passenger';
 
+  const handleModeChange = (newMode: UserMode) => {
+    setMode(newMode);
+  };
+
+  const handleBottomBarAction = () => {
+    // Acción principal según modo (en fases posteriores navega a búsqueda o creación)
+  };
+
   return (
-    <ScreenContainer scrollable>
-      {/* Encabezado Institucional */}
-      <View style={styles.header}>
-        <View style={styles.badgeRow}>
-          <StatusBadge label="BASE MODULAR ACTIVA" variant="success" />
-          <StatusBadge
-            label={isPassenger ? 'MODO PASAJERO' : 'MODO CONDUCTOR'}
-            variant={isPassenger ? 'info' : 'warning'}
+    <View style={styles.screenWrapper}>
+      {/* 1. Header Azul Superior */}
+      <AppHeader
+        title="UDES Ride"
+        rightSlot={
+          <Button
+            label="Ayuda"
+            variant="pill"
+            size="sm"
+            onPress={() => {}}
+          />
+        }
+      />
+
+      <ScreenContainer
+        scrollable
+        bottomBar={
+          <StickyBottomBar
+            label={isPassenger ? 'Ver viajes disponibles' : 'Publicar recorrido'}
+            onPress={handleBottomBarAction}
+          />
+        }
+      >
+        {/* 2. Selector de Ciudad y Campus */}
+        <View style={styles.citySelectorRow}>
+          <View style={styles.cityTextGroup}>
+            <View style={[styles.cityDot, { backgroundColor: colors.primary }]} />
+            <ThemedText variant="subheading" color={colors.textPrimary}>
+              Bucaramanga, CO
+            </ThemedText>
+          </View>
+          <Chip label="Cambiar campus" />
+        </View>
+
+        {/* 3. Título Display (Peso 400, alineado a la izquierda) */}
+        <ThemedText variant="display" color={colors.textPrimary} style={styles.heroTitle}>
+          ¿A dónde vas hoy?
+        </ThemedText>
+
+        {/* 4. SegmentedToggle Pasajero / Conductor (Mismo azul institucional) */}
+        <SegmentedToggle<UserMode>
+          options={MODE_OPTIONS}
+          value={mode}
+          onChange={handleModeChange}
+        />
+
+        {/* 5. Inputs de Ubicación con Timeline */}
+        <LocationInput
+          originValue={origin}
+          destinationValue={destination}
+          onChangeOrigin={setOrigin}
+          onChangeDestination={setDestination}
+          originPlaceholder="Punto de partida"
+          destinationPlaceholder="Destino hacia la UDES"
+        />
+
+        {/* 6. Sección de Sugerencias */}
+        <SectionHeading title="Sugerencias" marginTop={spacing.xxl} />
+
+        {/* Grilla de sugerencias adaptada para móvil */}
+        <View style={styles.suggestionsGrid}>
+          <SuggestionCard
+            title="Buscar viaje"
+            description="Encuentra rutas compartidas de estudiantes hacia el campus."
+            onPressDetails={() => {}}
+          />
+
+          <SuggestionCard
+            title="Publicar recorrido"
+            description="Comparte tus cupos habituales y ahorra gastos de movilidad."
+            onPressDetails={() => {}}
+          />
+
+          <SuggestionCard
+            title="Rutas habituales"
+            description="Guarda tus trayectos frecuentes desde tu barrio hacia la UDES."
+            onPressDetails={() => {}}
+          />
+
+          <SuggestionCard
+            title="Mis viajes"
+            description="Gestiona tus reservas confirmadas y solicitudes pendientes."
+            onPressDetails={() => {}}
           />
         </View>
-        <ThemedText variant="h1" style={styles.title}>
-          {APP_CONFIG.name}
-        </ThemedText>
-        <ThemedText variant="body" color={colors.textSecondary}>
-          {APP_CONFIG.campus.location} • {APP_CONFIG.campus.city}
-        </ThemedText>
-      </View>
 
-      {/* Control de Modo (Zustand) */}
-      <Card
-        highlighted={!isPassenger}
-        style={[styles.card, !isPassenger && styles.driverCard]}
-      >
-        <ThemedText
-          variant="label"
-          color={isPassenger ? colors.primary : colors.warning}
-          style={styles.cardHeader}
-        >
-          ROL ACTIVO: {isPassenger ? 'PASAJERO' : 'CONDUCTOR'}
-        </ThemedText>
-        <ThemedText variant="body" style={styles.cardDescription}>
-          {isPassenger
-            ? 'Configurado para consultar recorridos y solicitar cupos hacia la UDES.'
-            : 'Configurado para publicar recorridos y gestionar solicitudes de estudiantes.'}
-        </ThemedText>
-
-        <Button
-          label={`Cambiar a modo ${isPassenger ? 'Conductor' : 'Pasajero'}`}
-          onPress={toggleMode}
-          variant={isPassenger ? 'outline' : 'secondary'}
-          fullWidth
-          accessibilityHint="Alterna entre el modo pasajero y conductor sin cambiar de cuenta"
-        />
-      </Card>
-
-      {/* Arquitectura y Herramientas (Inspiradas en Obytes) */}
-      <Card style={styles.card}>
-        <ThemedText variant="label" color={colors.primary} style={styles.cardHeader}>
-          STACK TÉCNICO Y ARQUITECTURA
-        </ThemedText>
-        <ThemedText variant="body" style={styles.cardDescription}>
-          Estructura modular orientada a features en <ThemedText variant="bodyBold">src/</ThemedText>,
-          alineada con las mejores prácticas de la plantilla Obytes:
-        </ThemedText>
-
-        <View style={styles.specList}>
-          <View style={styles.specItem}>
-            <ThemedText variant="bodyBold">• Rutas:</ThemedText>
-            <ThemedText variant="body"> Expo Router v57 (File-based en src/app)</ThemedText>
-          </View>
-          <View style={styles.specItem}>
-            <ThemedText variant="bodyBold">• Estado Cliente:</ThemedText>
-            <ThemedText variant="body"> Zustand (Modo Pasajero / Conductor)</ThemedText>
-          </View>
-          <View style={styles.specItem}>
-            <ThemedText variant="bodyBold">• Datos Servidor:</ThemedText>
-            <ThemedText variant="body"> TanStack Query (QueryClientProvider)</ThemedText>
-          </View>
-          <View style={styles.specItem}>
-            <ThemedText variant="bodyBold">• Formularios:</ThemedText>
-            <ThemedText variant="body"> TanStack Form + Zod (Contratos y validación)</ThemedText>
-          </View>
-          <View style={styles.specItem}>
-            <ThemedText variant="bodyBold">• Pruebas:</ThemedText>
-            <ThemedText variant="body"> Jest + React Native Testing Library</ThemedText>
-          </View>
-          <View style={styles.specItem}>
-            <ThemedText variant="bodyBold">• Diseño:</ThemedText>
-            <ThemedText variant="body"> Tokens accesibles UDES (Alto contraste)</ThemedText>
-          </View>
+        {/* 7. Metadatos de Versión y Fase (Alineados a la izquierda) */}
+        <View style={styles.metaFooter}>
+          <ThemedText variant="caption" color={colors.textMuted}>
+            {APP_CONFIG.shortName} • v{APP_CONFIG.version} • {APP_CONFIG.phase}
+          </ThemedText>
         </View>
-      </Card>
-
-      {/* Próximo Paso */}
-      <Card style={[styles.card, styles.roadmapCard]}>
-        <ThemedText variant="label" color={colors.textSecondary} style={styles.cardHeader}>
-          ESTADO DEL PROYECTO: EN ESPERA DE AUTORIZACIÓN
-        </ThemedText>
-        <ThemedText variant="caption" color={colors.textSecondary}>
-          La Fase 1 (Autenticación con Supabase y validación institucional)
-          iniciará una vez autorizada formalmente la base técnica.
-        </ThemedText>
-      </Card>
-
-      {/* Pie de pantalla */}
-      <View style={[styles.footer, { marginTop: spacing.md }]}>
-        <ThemedText variant="caption" centered color={colors.textMuted}>
-          v{APP_CONFIG.version} • {APP_CONFIG.phase}
-        </ThemedText>
-      </View>
-    </ScreenContainer>
+      </ScreenContainer>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {
-    marginBottom: 20,
-    gap: 8,
+  screenWrapper: {
+    flex: 1,
   },
-  badgeRow: {
+  citySelectorRow: {
     flexDirection: 'row',
-    gap: 8,
-    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 8,
+    marginBottom: 4,
   },
-  title: {
+  cityTextGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  cityDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 9999,
+  },
+  heroTitle: {
     marginTop: 4,
+    marginBottom: 8,
   },
-  card: {
-    marginBottom: 16,
+  suggestionsGrid: {
+    gap: 16,
   },
-  driverCard: {
-    borderColor: '#D97706',
-  },
-  roadmapCard: {
-    borderStyle: 'dashed',
-  },
-  cardHeader: {
-    letterSpacing: 0.5,
-    marginBottom: 6,
-  },
-  cardDescription: {
-    marginBottom: 12,
-  },
-  specList: {
-    gap: 6,
-  },
-  specItem: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  footer: {
-    paddingVertical: 12,
+  metaFooter: {
+    marginTop: 24,
+    marginBottom: 8,
   },
 });

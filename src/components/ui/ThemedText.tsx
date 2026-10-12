@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, type TextProps } from 'react-native';
+import { StyleSheet, Text, type TextProps, type TextStyle } from 'react-native';
 import { useTheme } from '@/hooks/useTheme';
 import type { TextVariant } from '@/types/theme';
 
@@ -17,64 +17,67 @@ export const ThemedText: React.FC<ThemedTextProps> = ({
   style,
   ...props
 }) => {
-  const { colors, fontSize } = useTheme();
+  const { colors, typography } = useTheme();
 
-  const variantStyles = {
-    h1: {
-      fontSize: fontSize.xxxl,
-      fontWeight: '700' as const,
-      color: color ?? colors.textPrimary,
-      lineHeight: 40,
-    },
-    h2: {
-      fontSize: fontSize.xxl,
-      fontWeight: '700' as const,
-      color: color ?? colors.textPrimary,
-      lineHeight: 34,
-    },
-    h3: {
-      fontSize: fontSize.xl,
-      fontWeight: '600' as const,
-      color: color ?? colors.textPrimary,
-      lineHeight: 28,
-    },
-    body: {
-      fontSize: fontSize.md,
-      fontWeight: '400' as const,
-      color: color ?? colors.textSecondary,
-      lineHeight: 24,
-    },
-    bodyBold: {
-      fontSize: fontSize.md,
-      fontWeight: '600' as const,
-      color: color ?? colors.textPrimary,
-      lineHeight: 24,
-    },
-    caption: {
-      fontSize: fontSize.xs,
-      fontWeight: '400' as const,
-      color: color ?? colors.textMuted,
-      lineHeight: 16,
-    },
-    label: {
-      fontSize: fontSize.sm,
-      fontWeight: '600' as const,
-      color: color ?? colors.textPrimary,
-      lineHeight: 20,
-    },
+  // Mapeo de alias de compatibilidad a variantes de TYPOGRAPHY
+  const normalizedVariant = (() => {
+    switch (variant) {
+      case 'h1':
+        return 'display';
+      case 'h2':
+        return 'heading';
+      case 'h3':
+        return 'headingSm';
+      case 'bodyBold':
+        return 'bodyMedium';
+      default:
+        return variant;
+    }
+  })();
+
+  const token = typography[normalizedVariant] ?? typography.body;
+
+  // Asignación de color predeterminado según jerarquía
+  const defaultColor = (() => {
+    if (color) return color;
+    switch (normalizedVariant) {
+      case 'display':
+      case 'heading':
+      case 'headingSm':
+      case 'brand':
+        return colors.textPrimary;
+      case 'subheading':
+        return colors.textHeading2;
+      case 'caption':
+        return colors.textMuted;
+      case 'label':
+      case 'bodyMedium':
+        return colors.textPrimary;
+      case 'bodySm':
+      case 'body':
+      default:
+        return colors.textSecondary;
+    }
+  })();
+
+  const isHeader =
+    normalizedVariant === 'display' ||
+    normalizedVariant === 'heading' ||
+    normalizedVariant === 'headingSm';
+
+  const textStyle: TextStyle = {
+    fontFamily: token.fontFamily,
+    fontSize: token.fontSize,
+    lineHeight: token.lineHeight,
+    letterSpacing: token.letterSpacing,
+    color: defaultColor,
+    textAlign: centered ? 'center' : 'left',
   };
-
-  const isHeader = variant === 'h1' || variant === 'h2' || variant === 'h3';
 
   return (
     <Text
       accessibilityRole={isHeader ? 'header' : 'text'}
-      style={[
-        styles.base,
-        variantStyles[variant],
-        centered && styles.centered,
-        style,
-      ]}
+      style={[styles.base, textStyle, style]}
       {...props}
     >
       {children}
@@ -84,9 +87,6 @@ export const ThemedText: React.FC<ThemedTextProps> = ({
 
 const styles = StyleSheet.create({
   base: {
-    letterSpacing: -0.2,
-  },
-  centered: {
-    textAlign: 'center',
+    includeFontPadding: false,
   },
 });
