@@ -1,92 +1,47 @@
 import React from 'react';
-import { StyleSheet, Text, type TextProps, type TextStyle } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
+import { Text, type TextProps } from 'react-native';
 import type { TextVariant } from '@/types/theme';
 
 export interface ThemedTextProps extends TextProps {
   variant?: TextVariant;
-  color?: string;
   centered?: boolean;
+  className?: string;
 }
+
+const VARIANT_CLASSES: Record<TextVariant, string> = {
+  display: 'text-[40px] leading-[44px] font-semibold text-ink tracking-[-1.2px]',
+  heading: 'text-[30px] leading-[36px] font-semibold text-ink tracking-[-0.75px]',
+  headingSm: 'text-[24px] leading-[32px] font-semibold text-ink tracking-[-0.6px]',
+  subheading: 'text-[18px] leading-[28px] font-semibold text-ink',
+  bodyLg: 'text-[16px] leading-[24px] font-normal text-ink-soft',
+  body: 'text-[14px] leading-[20px] font-normal text-ink-soft',
+  bodyBold: 'text-[14px] leading-[20px] font-medium text-ink',
+  caption: 'text-[12px] leading-[16px] font-normal text-mid-gray',
+  label: 'text-[12px] leading-[16px] font-medium uppercase tracking-[0.6px] text-mid-gray',
+};
 
 export const ThemedText: React.FC<ThemedTextProps> = ({
   children,
   variant = 'body',
-  color,
   centered = false,
+  className = '',
   style,
   ...props
 }) => {
-  const { colors, typography } = useTheme();
-
-  // Mapeo de alias de compatibilidad a variantes de TYPOGRAPHY
-  const normalizedVariant = (() => {
-    switch (variant) {
-      case 'h1':
-        return 'display';
-      case 'h2':
-        return 'heading';
-      case 'h3':
-        return 'headingSm';
-      case 'bodyBold':
-        return 'bodyMedium';
-      default:
-        return variant;
-    }
-  })();
-
-  const token = typography[normalizedVariant] ?? typography.body;
-
-  // Asignación de color predeterminado según jerarquía
-  const defaultColor = (() => {
-    if (color) return color;
-    switch (normalizedVariant) {
-      case 'display':
-      case 'heading':
-      case 'headingSm':
-      case 'brand':
-        return colors.textPrimary;
-      case 'subheading':
-        return colors.textHeading2;
-      case 'caption':
-        return colors.textMuted;
-      case 'label':
-      case 'bodyMedium':
-        return colors.textPrimary;
-      case 'bodySm':
-      case 'body':
-      default:
-        return colors.textSecondary;
-    }
-  })();
-
   const isHeader =
-    normalizedVariant === 'display' ||
-    normalizedVariant === 'heading' ||
-    normalizedVariant === 'headingSm';
-
-  const textStyle: TextStyle = {
-    fontFamily: token.fontFamily,
-    fontSize: token.fontSize,
-    lineHeight: token.lineHeight,
-    letterSpacing: token.letterSpacing,
-    color: defaultColor,
-    textAlign: centered ? 'center' : 'left',
-  };
+    variant === 'display' ||
+    variant === 'heading' ||
+    variant === 'headingSm' ||
+    variant === 'subheading';
 
   return (
     <Text
       accessibilityRole={isHeader ? 'header' : 'text'}
-      style={[styles.base, textStyle, style]}
+      className={`${VARIANT_CLASSES[variant]} ${centered ? 'text-center' : ''} ${className}`.trim()}
+      style={style}
       {...props}
     >
       {children}
     </Text>
   );
 };
-
-const styles = StyleSheet.create({
-  base: {
-    includeFontPadding: false,
-  },
-});

@@ -1,33 +1,38 @@
 import React from 'react';
-import { StyleSheet, View, type StyleProp, type ViewProps, type ViewStyle } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
+import { View, type StyleProp, type ViewProps, type ViewStyle } from 'react-native';
 
 export interface CardProps extends ViewProps {
-  style?: StyleProp<ViewStyle>;
   selected?: boolean;
   highlighted?: boolean;
+  className?: string;
+  style?: StyleProp<ViewStyle>;
 }
 
 export const Card: React.FC<CardProps> = ({
   children,
-  style,
   selected = false,
   highlighted = false,
+  className = '',
+  style,
   ...props
 }) => {
-  const { colors, spacing, radius } = useTheme();
-  const isSelected = selected || highlighted;
+  const isHighlighted = highlighted || selected;
+  const hasCustomPadding = /\bp(?:[xytbse]?)-\d+/.test(className);
+  const paddingClass = hasCustomPadding ? '' : 'p-4';
 
   return (
     <View
+      className={`bg-paper rounded-2xl border ${
+        isHighlighted ? 'border-primary' : 'border-hairline'
+      } ${paddingClass} ${className}`.trim()}
       style={[
-        styles.card,
         {
-          backgroundColor: colors.surfaceSubtle,
-          borderRadius: radius.md,
-          padding: spacing.xxl,
-          borderWidth: isSelected ? 2 : 0,
-          borderColor: isSelected ? colors.primary : 'transparent',
+          // Sombra clínica sutil (New Architecture / react-native shadow)
+          shadowColor: '#000000',
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.08,
+          shadowRadius: 3,
+          elevation: 2,
         },
         style,
       ]}
@@ -37,9 +42,3 @@ export const Card: React.FC<CardProps> = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  card: {
-    overflow: 'hidden',
-  },
-});

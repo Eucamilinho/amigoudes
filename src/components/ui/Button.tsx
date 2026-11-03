@@ -2,13 +2,13 @@ import React from 'react';
 import {
   ActivityIndicator,
   Pressable,
+  Text,
   type GestureResponderEvent,
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
-import { ThemedText } from '@/components/ui/ThemedText';
 import type { ButtonSize, ButtonVariant } from '@/types/theme';
+import { useTheme } from '@/hooks/useTheme';
 
 export interface ButtonProps {
   label: string;
@@ -18,10 +18,13 @@ export interface ButtonProps {
   disabled?: boolean;
   loading?: boolean;
   fullWidth?: boolean;
-  underline?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  icon?: React.ReactNode;
+  iconPosition?: 'left' | 'right';
   accessibilityHint?: string;
+  className?: string;
   style?: StyleProp<ViewStyle>;
-  testID?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -32,115 +35,94 @@ export const Button: React.FC<ButtonProps> = ({
   disabled = false,
   loading = false,
   fullWidth = false,
-  underline = false,
+  leftIcon,
+  rightIcon,
+  icon,
+  iconPosition = 'left',
   accessibilityHint,
+  className = '',
   style,
-  testID,
 }) => {
-  const { colors, spacing, radius } = useTheme();
+  const resolvedLeftIcon = leftIcon ?? (iconPosition === 'left' ? icon : undefined);
+  const resolvedRightIcon = rightIcon ?? (iconPosition === 'right' ? icon : undefined);
   const isDisabled = disabled || loading;
 
-  const getContainerStyle = (pressed: boolean): ViewStyle => {
-    let backgroundColor: string = colors.primary;
-    let borderRadius: number = radius.md;
-    let minHeight = 48;
-    let paddingVertical = 12;
-    let paddingHorizontal: number = spacing.lg;
+  const sizeContainerClasses: Record<ButtonSize, string> = {
+    sm: 'h-11 px-4',
+    md: 'h-12 px-5',
+    lg: 'h-14 px-6',
+  };
 
+  const sizeTextClasses: Record<ButtonSize, string> = {
+    sm: 'text-[14px] leading-[20px]',
+    md: 'text-[15px] leading-[22px]',
+    lg: 'text-[16px] leading-[24px]',
+  };
+
+  const { colors } = useTheme();
+
+  const getVariantStyles = (): { container: string; text: string; spinner: string } => {
     switch (variant) {
       case 'primary':
-        backgroundColor = isDisabled
-          ? colors.surfaceSubtle
-          : pressed
-            ? colors.primaryPressed
-            : colors.primary;
-        break;
+        return {
+          container: isDisabled
+            ? 'bg-hairline opacity-60'
+            : 'bg-primary active:bg-primary-pressed',
+          text: isDisabled ? 'text-mid-gray' : 'text-white font-medium',
+          spinner: '#FFFFFF',
+        };
       case 'secondary':
-        backgroundColor = isDisabled
-          ? colors.surfaceSubtle
-          : pressed
-            ? colors.divider
-            : colors.surfaceSubtle;
-        break;
-      case 'ghost':
-        backgroundColor = 'transparent';
-        minHeight = 44;
-        paddingVertical = spacing.sm;
-        paddingHorizontal = spacing.xs;
-        break;
-      case 'pill':
-        backgroundColor = pressed ? colors.primarySubtle : colors.surface;
-        borderRadius = radius.full;
-        minHeight = 36;
-        paddingVertical = 6;
-        paddingHorizontal = spacing.lg;
-        break;
-    }
-
-    // Ajuste opcional por tamaño explícito
-    if (size === 'sm' && variant !== 'pill') {
-      minHeight = 44;
-      paddingVertical = spacing.sm;
-      paddingHorizontal = spacing.md;
-    }
-
-    return {
-      backgroundColor,
-      borderRadius,
-      minHeight,
-      paddingVertical,
-      paddingHorizontal,
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: fullWidth ? '100%' : 'auto',
-    };
-  };
-
-  const getTextColor = (): string => {
-    if (isDisabled) return colors.textMuted;
-    switch (variant) {
-      case 'primary':
-        return colors.textInverse;
-      case 'secondary':
-        return colors.textPrimary;
-      case 'ghost':
-        return colors.primary;
-      case 'pill':
-        return colors.primary;
+        return {
+          container: isDisabled
+            ? 'bg-canvas opacity-50'
+            : 'bg-canvas active:bg-hairline',
+          text: isDisabled ? 'text-mid-gray' : 'text-ink font-medium',
+          spinner: colors.ink,
+        };
+      case 'outline':
+        return {
+          container: isDisabled
+            ? 'bg-transparent border border-hairline opacity-50'
+            : 'bg-transparent border border-hairline active:bg-surface-alt active:border-mid-gray',
+          text: isDisabled ? 'text-mid-gray' : 'text-ink font-medium',
+          spinner: colors.ink,
+        };
+      case 'destructive':
+        return {
+          container: isDisabled
+            ? 'bg-transparent border border-hairline opacity-40'
+            : 'bg-transparent border border-destructive active:bg-destructive/10',
+          text: isDisabled ? 'text-mid-gray' : 'text-destructive font-medium',
+          spinner: colors.destructive,
+        };
     }
   };
 
-  const getTextVariant = () => {
-    if (variant === 'pill' || size === 'sm') {
-      return 'label';
-    }
-    return 'bodyMedium';
-  };
+  const { container, text, spinner } = getVariantStyles();
 
   return (
     <Pressable
-      testID={testID}
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled: isDisabled, busy: loading }}
       disabled={isDisabled}
       onPress={onPress}
-      style={({ pressed }) => [getContainerStyle(pressed), style]}
+      style={style}
+      className={`rounded-pill min-h-[44px] flex-row items-center justify-center gap-2 ${sizeContainerClasses[size]} ${container} ${
+        fullWidth ? 'w-full' : 'self-start'
+      } ${className}`.trim()}
     >
       {loading ? (
-        <ActivityIndicator
-          size="small"
-          color={variant === 'primary' ? colors.textInverse : colors.primary}
-        />
+        <ActivityIndicator size="small" color={spinner} />
       ) : (
-        <ThemedText
-          variant={getTextVariant()}
-          color={getTextColor()}
-          style={underline && variant === 'ghost' ? { textDecorationLine: 'underline' } : undefined}
-        >
-          {label}
-        </ThemedText>
+        <>
+          {resolvedLeftIcon}
+          <Text className={`${sizeTextClasses[size]} ${text}`}>
+            {label}
+          </Text>
+          {resolvedRightIcon}
+        </>
       )}
     </Pressable>
   );

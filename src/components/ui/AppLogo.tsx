@@ -1,116 +1,62 @@
 import React from 'react';
-import { Image, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
-import { ThemedText } from '@/components/ui/ThemedText';
+import { Image, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 
 export interface AppLogoProps {
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  customSize?: number;
   showText?: boolean;
   orientation?: 'vertical' | 'horizontal';
-  variant?: 'image' | 'vector';
-  useCustomImage?: boolean;
+  className?: string;
   style?: StyleProp<ViewStyle>;
 }
 
 export const AppLogo: React.FC<AppLogoProps> = ({
   size = 'md',
+  customSize,
   showText = true,
   orientation = 'vertical',
-  variant = 'image',
-  useCustomImage,
+  className = '',
   style,
 }) => {
-  const { colors, spacing, radius } = useTheme();
+  const dimensions = {
+    sm: { iconSize: 36, textSize: 'text-[16px] leading-[22px]', captionSize: 'text-[11px]' },
+    md: { iconSize: 52, textSize: 'text-[20px] leading-[26px]', captionSize: 'text-[12px]' },
+    lg: { iconSize: 72, textSize: 'text-[26px] leading-[32px]', captionSize: 'text-[13px]' },
+    xl: { iconSize: 96, textSize: 'text-[32px] leading-[38px]', captionSize: 'text-[14px]' },
+    '2xl': { iconSize: 136, textSize: 'text-[36px] leading-[42px]', captionSize: 'text-[15px]' },
+  }[size];
 
-  // Permite controlar si se usa imagen o vector por variant o useCustomImage
-  const isImageVariant = useCustomImage !== undefined ? useCustomImage : variant === 'image';
+  const iconPixelSize = customSize ?? dimensions.iconSize;
 
-  const dimensions = (() => {
-    switch (size) {
-      case 'sm':
-        return { iconSize: 36, fontSize: 'bodyMedium' as const, badgeRadius: radius.md };
-      case 'lg':
-        return { iconSize: 72, fontSize: 'heading' as const, badgeRadius: radius.md };
-      case 'xl':
-        return { iconSize: 96, fontSize: 'display' as const, badgeRadius: radius.md };
-      case 'md':
-      default:
-        return { iconSize: 52, fontSize: 'headingSm' as const, badgeRadius: radius.md };
-    }
-  })();
+  const logoImage = require('../../../assets/brand/logo.png');
 
   return (
     <View
       accessibilityRole="image"
-      accessibilityLabel="Logotipo Carpooling UDES"
-      style={[
-        styles.container,
-        orientation === 'horizontal' ? styles.row : styles.column,
-        style,
-      ]}
+      accessibilityLabel="Logotipo AmigoUDES"
+      className={`items-center justify-center ${
+        orientation === 'horizontal' ? 'flex-row gap-3' : 'flex-col gap-2'
+      } ${className}`.trim()}
+      style={style}
     >
-      {isImageVariant ? (
+      <View className="rounded-3xl overflow-hidden bg-primary-soft p-1 border border-primary/20">
         <Image
-          source={require('../../../assets/brand/logo.png')}
-          style={{
-            width: dimensions.iconSize,
-            height: dimensions.iconSize,
-            borderRadius: dimensions.badgeRadius,
-          }}
+          source={logoImage}
+          style={{ width: iconPixelSize, height: iconPixelSize }}
           resizeMode="contain"
         />
-      ) : (
-        /* Emblema Vectorial Transit Kiosk */
-        <View
-          style={[
-            styles.emblemBadge,
-            {
-              width: dimensions.iconSize,
-              height: dimensions.iconSize,
-              backgroundColor: colors.primary,
-              borderRadius: dimensions.badgeRadius,
-            },
-          ]}
-        >
-          <ThemedText
-            variant="brand"
-            color={colors.textInverse}
-            style={{ fontSize: dimensions.iconSize * 0.44, lineHeight: dimensions.iconSize * 0.52 }}
-          >
-            U
-          </ThemedText>
-        </View>
-      )}
+      </View>
 
       {showText ? (
-        <View style={orientation === 'horizontal' ? { marginLeft: spacing.md } : { marginTop: spacing.sm }}>
-          <ThemedText variant={dimensions.fontSize} color={colors.textPrimary}>
-            UDES Ride
-          </ThemedText>
-          {size === 'xl' || size === 'lg' ? (
-            <ThemedText variant="caption" color={colors.textSecondary}>
-              Carpooling Universitario
-            </ThemedText>
-          ) : null}
+        <View className={orientation === 'horizontal' ? 'items-start' : 'items-center'}>
+          <Text className={`font-semibold text-ink tracking-tight ${dimensions.textSize}`}>
+            Amigo<Text className="text-primary">UDES</Text>
+          </Text>
+          <Text className={`text-mid-gray font-normal ${dimensions.captionSize}`}>
+            Carpooling Universitario
+          </Text>
         </View>
       ) : null}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-  },
-  column: {
-    flexDirection: 'column',
-  },
-  emblemBadge: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

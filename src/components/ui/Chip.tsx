@@ -1,92 +1,46 @@
 import React from 'react';
-import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
-import { ThemedText } from '@/components/ui/ThemedText';
-import type { BadgeVariant } from '@/types/theme';
+import { Pressable, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 
 export interface ChipProps {
   label: string;
-  variant?: BadgeVariant;
+  selected?: boolean;
+  onPress?: () => void;
+  icon?: React.ReactNode;
+  disabled?: boolean;
+  className?: string;
   style?: StyleProp<ViewStyle>;
 }
 
 export const Chip: React.FC<ChipProps> = ({
   label,
-  variant = 'default',
+  selected = false,
+  onPress,
+  icon,
+  disabled = false,
+  className = '',
   style,
 }) => {
-  const { colors, spacing, radius } = useTheme();
-
-  const getVariantStyles = () => {
-    switch (variant) {
-      case 'active':
-        return {
-          backgroundColor: colors.primaryMuted,
-          textColor: colors.primary,
-        };
-      case 'success':
-        return {
-          backgroundColor: colors.successBackground,
-          textColor: colors.success,
-        };
-      case 'error':
-        return {
-          backgroundColor: colors.errorBackground,
-          textColor: colors.error,
-        };
-      case 'warning':
-        return {
-          backgroundColor: colors.warningBackground,
-          textColor: colors.warning,
-        };
-      case 'info':
-        return {
-          backgroundColor: colors.primaryMuted,
-          textColor: colors.primary,
-        };
-      case 'default':
-      case 'neutral':
-      default:
-        return {
-          backgroundColor: colors.surfaceSubtle,
-          textColor: colors.textPrimary,
-        };
-    }
-  };
-
-  const { backgroundColor, textColor } = getVariantStyles();
-
   return (
-    <View
-      accessibilityRole="text"
-      style={[
-        styles.chip,
-        {
-          backgroundColor,
-          borderRadius: radius.full,
-          paddingVertical: 6,
-          paddingHorizontal: spacing.md,
-        },
-        style,
-      ]}
+    <Pressable
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked: selected, disabled }}
+      disabled={disabled}
+      onPress={onPress}
+      className={`rounded-pill min-h-[44px] px-4 py-2 flex-row items-center justify-center gap-1.5 transition-all ${
+        selected
+          ? 'bg-primary-soft border border-primary'
+          : 'bg-canvas border border-hairline'
+      } ${disabled ? 'opacity-40' : ''} ${className}`.trim()}
+      style={style}
     >
-      <ThemedText variant="label" color={textColor} style={styles.text}>
+      {icon ? <View>{icon}</View> : null}
+      <Text
+        className={`text-[13px] leading-[18px] font-medium ${
+          selected ? 'text-primary' : 'text-ink-soft'
+        }`}
+      >
         {label}
-      </ThemedText>
-    </View>
+      </Text>
+    </Pressable>
   );
 };
-
-export const StatusBadge = Chip;
-
-const styles = StyleSheet.create({
-  chip: {
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    letterSpacing: 0,
-  },
-});

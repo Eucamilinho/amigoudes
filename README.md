@@ -1,84 +1,53 @@
-# Carpooling Universitario UDES
+# AmigoUDES 🚗🎓
 
-> Aplicación móvil de viajes compartidos exclusiva para estudiantes de la Universidad de Santander (UDES), campus Lagos del Cacique, Bucaramanga, Colombia.
-> Arquitectura moderna y modular inspirada en las mejores prácticas de la plantilla oficial de [Obytes](https://github.com/obytes/react-native-template-obytes).
+> **Carpooling exclusivo para la comunidad de la Universidad de Santander (UDES), Bucaramanga, Colombia.**
 
----
-
-## Estado del Proyecto
-
-- **Fase Actual**: **FASE 0 - Arquitectura, Configuración y Estructura Inicial (COMPLETADA Y REFORZADA CON OBYTES)**
-- **Próxima Fase**: **FASE 1 - Autenticación con Supabase y Verificación de Correo Estudiantil** (Pendiente de aprobación)
+Aplicación móvil construida en **React Native** con **Expo SDK 57 (managed workflow + Continuous Native Generation)**, **TypeScript estricto** y estilizada con **NativeWind (Tailwind CSS)** siguiendo el sistema de diseño clínico (*clinical blueprint on frosted paper* con acento exclusivo azul `#2563EB`).
 
 ---
 
-## Requisitos Previos
+## 📱 Visión del Producto
 
-- **Node.js**: v20+ (recomendada LTS, testeado en v24).
-- **npm**: v10+ (o gestor compatible).
-- **Expo Go** en dispositivo físico (iOS o Android) o emulador local.
-
----
-
-## Instalación y Configuración
-
-1. Clonar el repositorio y acceder al directorio:
-   ```bash
-   cd brave-brahmagupta
-   ```
-
-2. Instalar dependencias del proyecto:
-   ```bash
-   npm install
-   ```
-
-3. Configurar variables de entorno locales:
-   ```bash
-   cp .env.example .env
-   ```
+- **Comunidad UDES:** Estudiantes, docentes y personal administrativo comparten trayectos hacia y desde el campus (Lagos del Cacique, Bucaramanga).
+- **Dos Roles en Un Solo Perfil:** Pasajero y Conductor integrados, alternables al instante desde el toggle segmentado en el Home.
+- **Rutas Habituales y Demanda Potencial:** Registro de horarios rutinarios y sectores de origen para proyectar demanda potencial antes de publicar un viaje.
+- **Solidario y Seguro:** Carpooling sin ánimo de lucro (aporte voluntario de gasolina) y protección de privacidad (radios aproximados ~400 m, sin direcciones exactas públicas).
 
 ---
 
-## Comandos Disponibles
+## 🛠 Stack Técnico
 
-| Comando | Descripción |
-| :--- | :--- |
-| `npm run start` | Inicia el servidor de desarrollo de Metro/Expo |
-| `npm run android` | Ejecuta la aplicación en emulador o dispositivo Android |
-| `npm run ios` | Ejecuta la aplicación en simulador iOS (requiere macOS) |
-| `npm run web` | Ejecuta la aplicación en navegador web |
-| `npm run typecheck` | Ejecuta la verificación estricta de tipos de TypeScript |
-| `npm run lint` | Ejecuta el análisis estático de código con ESLint |
-| `npm test` | Ejecuta la suite de pruebas unitarias con Jest |
-| `npm run doctor` | Diagnostica dependencias y compatibilidad con Expo Doctor |
+- **Framework:** Expo SDK 57 (~57.0.28) / React Native 0.86.3 / React 19.2.3.
+- **Estilos:** NativeWind v4 (`nativewind@^4.2.7`, `tailwindcss@3`).
+- **Navegación:** Expo Router v57 (rutas en `src/app/`).
+- **Estado Servidor:** TanStack Query (`@tanstack/react-query`).
+- **Validación:** Zod.
+- **Animaciones y Gestos:** `react-native-reanimated`, `react-native-gesture-handler`.
+- **Íconos:** `lucide-react-native`, `@expo/vector-icons`.
 
 ---
 
-## Stack Tecnológico y Herramientas Adoptadas
+## 🎨 Sistema de Diseño (Azul Clínico)
 
-- **Framework**: React Native 0.86 con Expo SDK 57.
-- **Navegación**: Expo Router v57 (enrutamiento declarativo basado en archivos en `src/app/`).
-- **Estado Cliente**: Zustand v5 (gestión ligera de modo Pasajero / Conductor en `src/store/`).
-- **Datos Servidor**: TanStack Query v5 (cliente y caché en `src/lib/react-query.tsx`).
-- **Formularios y Validaciones**: TanStack Form + Zod (esquemas en `src/schemas/`).
-- **Pruebas Automatizadas**: Jest 29 + React Native Testing Library v14 (en `src/**/__tests__/`).
-- **Análisis de Calidad**: ESLint con `eslint-config-expo` + Expo Doctor.
-- **Diseño**: "Transit Kiosk" inspirado en Uber con **Azul (#276EF1)** como único color de marca, diseño plano sin sombras, radios binarios (8 y 9999) y tipografía Inter (`@expo-google-fonts/inter`).
-
----
-
-## Sistema de Diseño: Transit Kiosk Azul
-
-- **Filosofía**: Lienzo blanco (`#FFFFFF`), texto de alto contraste (`#000000`, `#333333`), y un único azul cromático (`#276EF1`) para elementos estructurales e interactivos (cabecera, CTA principal, barra inferior fija, estados activos).
-- **Cero Sombras**: Diseño totalmente plano; la profundidad se genera mediante escalones de superficie (`#FFFFFF` → `#F6F6F6` → azul) y bordes hairline de 1px.
-- **Tipografía Inter**: Títulos en peso 400 (`display`, `heading`, `headingSm`), textos medios en peso 500 (`subheading`, `bodyMedium`, `label`) y wordmark en peso 700 (`brand`). En Android, el peso se resuelve exclusivamente vía `fontFamily` para evitar distorsiones.
-- **Componentes Base**: `AppHeader`, `StickyBottomBar`, `SegmentedToggle`, `LocationInput`, `SuggestionCard`, `SectionHeading`, `TabStrip`, `Button`, `Card`, `Chip` y `ThemedText`.
+- **Canvas:** `#F5F5F5` (fondo de pantallas e inputs en reposo).
+- **Paper:** `#FFFFFF` (tarjetas, modales, bottom sheets).
+- **Ink / Ink-soft:** `#0A0A0A` / `#171717` (títulos y textos principales).
+- **Mid-gray:** `#737373` (textos atenuados, placeholders).
+- **Hairline:** `#E5E5E5` (bordes y divisores).
+- **Primary:** `#2563EB` (acciones principales, selección, enlaces).
+- **Destructive:** `#E7000B` (exclusivo para errores y acciones destructivas).
 
 ---
 
-## Documentación Técnica
+## 🚦 Comandos de Verificación
 
-- [Arquitectura del Sistema](docs/ARCHITECTURE.md)
-- [Registro de Decisiones de Arquitectura (ADRs)](docs/DECISIONS.md)
-- [Hoja de Ruta por Fases](docs/ROADMAP.md)
-- [Guía de Variables de Entorno y Seguridad](docs/ENVIRONMENT.md)
+```bash
+# Comprobación de tipos
+npx tsc --noEmit
+
+# Linter oficial de Expo
+npx expo lint
+
+# Iniciar servidor de desarrollo
+npx expo start
+```

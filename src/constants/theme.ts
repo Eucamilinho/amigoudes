@@ -1,42 +1,53 @@
 /**
- * Sistema de diseño: "Kiosco de transporte azul y blanco"
- *
- * Lienzo blanco, texto casi negro, y UN solo azul para todo lo estructural e interactivo
- * (header, CTA principal, barra inferior fija, estados activos). Diseño plano: SIN sombras
- * ni elevation. La profundidad sale solo de los escalones de superficie (#FFFFFF → #F6F6F6 → azul)
- * y de bordes hairline de 1px. Los radios son binarios: 8 o 9999. Los títulos usan peso 400,
- * nunca bold. El texto siempre va alineado a la izquierda. El color "decorativo" vive solo en
- * ilustraciones.
+ * Tokens de diseño visual para AmigoUDES.
+ * Sistema "clinical blueprint on frosted paper" con azul (#2563EB) como único acento de marca.
  */
 
-export const COLORS = {
-  // Marca (único color cromático de la UI)
-  primary: '#276EF1', // CTA, header, sticky bar, foco, links activos
-  primaryPressed: '#1A56C9', // estado pressed
-  primaryMuted: '#DCE7FD', // fondo de pestaña/toggle activo (reemplaza el teal)
-  primarySubtle: '#F0F5FF', // lavado muy sutil, uso excepcional
+export const LIGHT_COLORS = {
+  // Superficies
+  canvas: '#F5F5F5',
+  paper: '#FFFFFF',
+  surfaceAlt: '#FAFAFA',
 
-  // Neutros (texto y superficies)
-  textPrimary: '#000000',
-  textHeading2: '#333333', // títulos secundarios
-  textSecondary: '#5E5E5E', // párrafos
-  textMuted: '#AFAFAF', // ayuda, deshabilitado
-  textInverse: '#FFFFFF',
-  background: '#FFFFFF',
-  surface: '#FFFFFF',
-  surfaceSubtle: '#F6F6F6', // cards, inputs con relleno, toggles
-  border: '#767676', // borde de inputs (hairline)
-  divider: '#E2E2E2', // separadores de lista, más suave que border
-  borderFocus: '#276EF1',
+  // Tipografía y contraste
+  ink: '#0A0A0A',
+  inkSoft: '#171717',
+  midGray: '#737373',
+  hairline: '#E5E5E5',
 
-  // Semánticos: SOLO para feedback de formularios/errores, nunca decorativos
-  success: '#05944F',
-  successBackground: '#E6F4EA',
-  error: '#E11900',
-  errorBackground: '#FDE8E8',
-  warning: '#B45309',
-  warningBackground: '#FEF3C7',
+  // Acción principal (Azul)
+  primary: '#2563EB',
+  primaryPressed: '#1D4ED8',
+  primarySoft: '#EFF6FF',
+  primaryRing: '#BFDBFE',
+
+  // Destructivo (Rojo exclusivo de advertencias/cancelaciones)
+  destructive: '#E7000B',
 } as const;
+
+export const DARK_COLORS = {
+  // Superficies oscuras
+  canvas: '#121214',
+  paper: '#1C1C20',
+  surfaceAlt: '#26262A',
+
+  // Tipografía y contraste
+  ink: '#F5F5F7',
+  inkSoft: '#D4D4D8',
+  midGray: '#9CA3AF',
+  hairline: '#2D2D32',
+
+  // Acción principal (Azul accesible en fondos oscuros)
+  primary: '#3B82F6',
+  primaryPressed: '#2563EB',
+  primarySoft: '#1E3A8A',
+  primaryRing: '#1E40AF',
+
+  // Destructivo
+  destructive: '#EF4444',
+} as const;
+
+export const COLORS = LIGHT_COLORS;
 
 export const SPACING = {
   xs: 4,
@@ -45,90 +56,66 @@ export const SPACING = {
   lg: 16,
   xl: 20,
   xxl: 24,
-  xxxl: 32,
-  section: 48,
-  sectionLg: 64,
+  xxxl: 48,
+  cardPadding: 20,
+  gap: 8,
 } as const;
 
 export const RADIUS = {
-  none: 0,
-  md: 8,
+  nested: 10,
+  pill: 18,
+  card: 24,
   full: 9999,
-  // Alias de compatibilidad:
-  sm: 8,
-  lg: 8,
-  xl: 8,
 } as const;
 
 export const TYPOGRAPHY = {
-  display: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 36,
-    lineHeight: 44,
-    letterSpacing: 0,
-  },
-  heading: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 28,
-    lineHeight: 36,
-    letterSpacing: 0,
-  },
-  headingSm: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 24,
-    lineHeight: 32,
-    letterSpacing: 0,
-  },
-  subheading: {
-    fontFamily: 'Inter_500Medium',
-    fontSize: 18,
-    lineHeight: 24,
-    letterSpacing: 0,
-  },
-  body: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 16,
-    lineHeight: 24,
-    letterSpacing: 0,
-  },
-  bodyMedium: {
-    fontFamily: 'Inter_500Medium',
-    fontSize: 16,
-    lineHeight: 24,
-    letterSpacing: 0,
-  },
-  bodySm: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 14,
-    lineHeight: 20,
-    letterSpacing: 0,
-  },
-  label: {
-    fontFamily: 'Inter_500Medium',
-    fontSize: 14,
-    lineHeight: 20,
-    letterSpacing: 0,
-  },
   caption: {
-    fontFamily: 'Inter_400Regular',
     fontSize: 12,
     lineHeight: 16,
-    letterSpacing: 0,
+    letterSpacing: 0.6,
+    fontWeight: '500' as const,
   },
-  brand: {
-    fontFamily: 'Inter_700Bold',
-    fontSize: 20,
+  body: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: '400' as const,
+  },
+  bodyLg: {
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: '400' as const,
+  },
+  subheading: {
+    fontSize: 18,
     lineHeight: 28,
-    letterSpacing: 0,
+    fontWeight: '600' as const,
+  },
+  headingSm: {
+    fontSize: 24,
+    lineHeight: 32,
+    letterSpacing: -0.6,
+    fontWeight: '600' as const,
+  },
+  heading: {
+    fontSize: 30,
+    lineHeight: 36,
+    letterSpacing: -0.75,
+    fontWeight: '600' as const,
+  },
+  display: {
+    fontSize: 40,
+    lineHeight: 44,
+    letterSpacing: -1.2,
+    fontWeight: '600' as const,
   },
 } as const;
 
-export const FONT_SIZE = {
-  xs: 12,
-  sm: 14,
-  md: 16,
-  lg: 18,
-  xl: 22,
-  xxl: 28,
-  xxxl: 36,
+export const SHADOWS = {
+  card: {
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
 } as const;

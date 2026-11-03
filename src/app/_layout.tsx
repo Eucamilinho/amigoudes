@@ -1,74 +1,60 @@
-import React, { useEffect } from 'react';
+import '../../global.css';
+import React from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import {
-  useFonts,
-  Inter_400Regular,
-  Inter_500Medium,
-  Inter_700Bold,
-} from '@expo-google-fonts/inter';
-import * as SplashScreen from 'expo-splash-screen';
-import { COLORS } from '@/constants/theme';
 import { QueryProvider } from '@/lib/react-query';
 
-// Prevenir que el splash screen se oculte automáticamente antes de cargar las fuentes
-void SplashScreen.preventAutoHideAsync();
+import { useTheme } from '@/hooks/useTheme';
 
-export default function RootLayout() {
-  const [fontsLoaded, fontError] = useFonts({
-    Inter_400Regular,
-    Inter_500Medium,
-    Inter_700Bold,
-  });
-
-  useEffect(() => {
-    if (fontsLoaded || fontError) {
-      void SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, fontError]);
-
-  if (!fontsLoaded && !fontError) {
-    return null;
-  }
+function RootNavigation() {
+  const { isDark, colors } = useTheme();
 
   return (
-    <QueryProvider>
-      <SafeAreaProvider>
-        <StatusBar style="light" />
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            animation: 'fade',
-            contentStyle: { backgroundColor: COLORS.background },
+    <>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          animation: 'fade',
+          contentStyle: { backgroundColor: colors.canvas },
+        }}
+      >
+        <Stack.Screen
+          name="index"
+          options={{
+            title: 'Inicio',
           }}
-        >
-          <Stack.Screen
-            name="index"
-            options={{
-              title: 'Inicio',
-            }}
-          />
-          <Stack.Screen
-            name="welcome"
-            options={{
-              title: 'Bienvenido',
-            }}
-          />
-          <Stack.Screen
-            name="login"
-            options={{
-              title: 'Iniciar sesión',
-            }}
-          />
-          <Stack.Screen
-            name="register"
-            options={{
-              title: 'Crear cuenta',
-            }}
-          />
-        </Stack>
-      </SafeAreaProvider>
-    </QueryProvider>
+        />
+        <Stack.Screen
+          name="welcome"
+          options={{
+            title: 'Bienvenida',
+          }}
+        />
+        <Stack.Screen
+          name="login"
+          options={{
+            title: 'Iniciar Sesión',
+          }}
+        />
+        <Stack.Screen
+          name="register"
+          options={{
+            title: 'Registro',
+          }}
+        />
+      </Stack>
+    </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <SafeAreaProvider>
+      <QueryProvider>
+        <RootNavigation />
+      </QueryProvider>
+    </SafeAreaProvider>
   );
 }

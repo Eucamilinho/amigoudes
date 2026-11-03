@@ -1,153 +1,82 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, Text, Pressable } from 'react-native';
+import { router } from 'expo-router';
+import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import {
-  AppHeader,
+  User,
+  Car,
+} from 'lucide-react-native';
+import {
   AppLogo,
   Button,
-  Card,
+  Icon,
   ScreenContainer,
-  ThemedText,
 } from '@/components/ui';
-import { useTheme } from '@/hooks/useTheme';
+import { useAuthStore } from '@/features/auth';
 
 export default function WelcomeScreen() {
-  const router = useRouter();
-  const { colors, spacing } = useTheme();
+  const loginAsDemo = useAuthStore((state) => state.loginAsDemo);
+
+  const handleQuickDemo = (role: 'passenger' | 'driver') => {
+    loginAsDemo(role);
+    router.replace('/');
+  };
 
   return (
-    <View style={styles.screenWrapper}>
-      <AppHeader
-        title="UDES Ride"
-        rightSlot={
+    <ScreenContainer scrollable={false}>
+      <View className="flex-1 justify-between py-6">
+        {/* Hero Central Ultra-Minimalista con Logo Destacado */}
+        <Animated.View
+          entering={FadeInDown.delay(120).duration(600).springify()}
+          className="items-center justify-center my-auto"
+        >
+          <AppLogo size="2xl" customSize={150} showText={false} />
+        </Animated.View>
+
+        {/* Acciones Inferiores (Sin Scroll, 1 Botón Primario) */}
+        <Animated.View
+          entering={FadeInUp.delay(220).duration(600).springify()}
+          className="gap-2.5 pb-2"
+        >
           <Button
-            label="Demo"
-            variant="pill"
-            size="sm"
-            onPress={() => router.replace('/')}
-          />
-        }
-      />
-
-      <ScreenContainer scrollable>
-        {/* Apartado del Logo Oficial */}
-        <View style={styles.logoSection}>
-          <AppLogo size="xl" showText={false} />
-          <View style={styles.brandTitleGroup}>
-            <ThemedText variant="display" color={colors.textPrimary}>
-              UDES Ride
-            </ThemedText>
-            <ThemedText variant="subheading" color={colors.primary}>
-              Carpooling Universitario
-            </ThemedText>
-          </View>
-        </View>
-
-        {/* Título y descripción */}
-        <View style={styles.introSection}>
-          <ThemedText variant="heading" color={colors.textPrimary} style={styles.heroTitle}>
-            Tu viaje diario hacia el campus, compartido
-          </ThemedText>
-          <ThemedText variant="body" color={colors.textSecondary} style={styles.heroSubtitle}>
-            Conecta con compañeros de la Universidad de Santander en Bucaramanga.
-            Comparte rutas habituales, ahorra tiempo y viaja de forma segura.
-          </ThemedText>
-        </View>
-
-        {/* Puntos de valor estilo Kiosk */}
-        <View style={styles.cardsSection}>
-          <Card style={styles.kioskCard}>
-            <ThemedText variant="bodyMedium" color={colors.textPrimary}>
-              Comunidad 100% UDES
-            </ThemedText>
-            <ThemedText variant="caption" color={colors.textSecondary} style={styles.cardDetail}>
-              Plataforma exclusiva para estudiantes de la universidad con verificación de identidad.
-            </ThemedText>
-          </Card>
-
-          <Card style={styles.kioskCard}>
-            <ThemedText variant="bodyMedium" color={colors.textPrimary}>
-              Flexibilidad de roles
-            </ThemedText>
-            <ThemedText variant="caption" color={colors.textSecondary} style={styles.cardDetail}>
-              Alterna fácilmente entre pasajero para reservar cupos o conductor para publicar tus recorridos.
-            </ThemedText>
-          </Card>
-        </View>
-
-        {/* Acciones principales de bienvenida */}
-        <View style={styles.actionsSection}>
-          <Button
-            label="Iniciar sesión"
-            variant="primary"
-            size="lg"
-            onPress={() => router.push('/login')}
-          />
-
-          <View style={{ height: spacing.md }} />
-
-          <Button
-            label="Registrarse"
-            variant="secondary"
-            size="lg"
+            label="Crear cuenta"
             onPress={() => router.push('/register')}
+            variant="primary"
+            fullWidth
           />
 
-          <View style={styles.guestLinkContainer}>
-            <Button
-              label="Explorar sin cuenta (Modo demostración)"
-              variant="pill"
-              size="sm"
-              onPress={() => router.replace('/')}
-            />
+          <Button
+            label="Entrar"
+            onPress={() => router.push('/login')}
+            variant="secondary"
+            fullWidth
+          />
+
+          {/* Acceso demo sutil y directo con íconos */}
+          <View className="flex-row items-center justify-center gap-2 pt-2">
+            <Text className="text-[12px] text-mid-gray">Demo:</Text>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Probar como pasajero"
+              onPress={() => handleQuickDemo('passenger')}
+              className="min-h-[44px] flex-row items-center gap-1.5 py-1.5 px-3 rounded-pill bg-canvas border border-hairline active:bg-hairline"
+            >
+              <Icon icon={User} size="sm" color="primary" />
+              <Text className="text-[12px] font-medium text-ink">Pasajero</Text>
+            </Pressable>
+
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Probar como conductor"
+              onPress={() => handleQuickDemo('driver')}
+              className="min-h-[44px] flex-row items-center gap-1.5 py-1.5 px-3 rounded-pill bg-canvas border border-hairline active:bg-hairline"
+            >
+              <Icon icon={Car} size="sm" color="primary" />
+              <Text className="text-[12px] font-medium text-ink">Conductor</Text>
+            </Pressable>
           </View>
-        </View>
-      </ScreenContainer>
-    </View>
+        </Animated.View>
+      </View>
+    </ScreenContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  screenWrapper: {
-    flex: 1,
-  },
-  logoSection: {
-    paddingTop: 16,
-    paddingBottom: 24,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
-  },
-  brandTitleGroup: {
-    flex: 1,
-    gap: 2,
-  },
-  introSection: {
-    marginBottom: 24,
-  },
-  heroTitle: {
-    marginBottom: 8,
-  },
-  heroSubtitle: {
-    lineHeight: 24,
-  },
-  cardsSection: {
-    gap: 12,
-    marginBottom: 32,
-  },
-  kioskCard: {
-    padding: 16,
-  },
-  cardDetail: {
-    marginTop: 4,
-    lineHeight: 18,
-  },
-  actionsSection: {
-    marginTop: 'auto',
-    paddingBottom: 24,
-  },
-  guestLinkContainer: {
-    marginTop: 16,
-    alignItems: 'center',
-  },
-});

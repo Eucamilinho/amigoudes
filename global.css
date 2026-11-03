@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-canvas: 245 245 245;
+    --color-paper: 255 255 255;
+    --color-surface-alt: 250 250 250;
+    --color-ink: 10 10 10;
+    --color-ink-soft: 23 23 23;
+    --color-mid-gray: 115 115 115;
+    --color-hairline: 229 229 229;
+    --color-primary: 37 99 235;
+    --color-primary-pressed: 29 78 216;
+    --color-primary-soft: 239 246 255;
+    --color-primary-ring: 191 219 254;
+    --color-destructive: 231 0 11;
+  }
+  .dark {
+    --color-canvas: 18 18 20;
+    --color-paper: 28 28 32;
+    --color-surface-alt: 38 38 42;
+    --color-ink: 245 245 247;
+    --color-ink-soft: 212 212 216;
+    --color-mid-gray: 156 163 175;
+    --color-hairline: 45 45 50;
+    --color-primary: 59 130 246;
+    --color-primary-pressed: 37 99 235;
+    --color-primary-soft: 30 58 138;
+    --color-primary-ring: 30 64 175;
+    --color-destructive: 239 68 68;
+  }
+}

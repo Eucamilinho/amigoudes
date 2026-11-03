@@ -1,44 +1,32 @@
 {
   "expo": {
-    "name": "Carpooling UDES",
-    "slug": "carpooling-udes",
-    "scheme": "carpooling-udes",
+    "name": "AmigoUDES",
+    "slug": "amigoudes",
+    "scheme": "amigoudes",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": false,
-      "bundleIdentifier": "edu.udes.carpooling"
+      "supportsTablet": true,
+      "bundleIdentifier": "com.amigoudes.app"
     },
     "android": {
+      "package": "com.amigoudes.app",
       "adaptiveIcon": {
-        "backgroundColor": "#276EF1",
+        "backgroundColor": "#EFF6FF",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "package": "edu.udes.carpooling",
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png",
-      "bundler": "metro"
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-router",
-      "expo-font",
-      [
-        "expo-splash-screen",
-        {
-          "backgroundColor": "#FFFFFF",
-          "image": "./assets/splash-icon.png",
-          "imageWidth": 120
-        }
-      ]
-    ],
-    "experiments": {
-      "typedRoutes": true
-    }
+      "expo-font"
+    ]
   }
 }
